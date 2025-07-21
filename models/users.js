@@ -50,17 +50,27 @@ const getUser = (pk_user) => {
 }
 
 /**
- * Delete an specific user
+ * Delete an specific user (logical delete)
  * @param {number} pk_user User primary key
- * @returns {pk_user: 1} User primary key
+ * @returns {{pk_user: number}} Deleted user ID
  */
 const deleteUser = (pk_user) => {
-
-    throw new Error('Method not implemented.');
-}
+    try {
+        const result = postgresql.public.one(`
+            UPDATE users
+            SET status = false
+            WHERE pk_user = ${pk_user}
+            RETURNING pk_user;
+        `);
+        return result;
+    } catch (e) {
+        throw new Error(e);
+    }
+};
 
 module.exports = {
     createUser,
     getUser,
-    updateUser
+    updateUser,
+    deleteUser
 }

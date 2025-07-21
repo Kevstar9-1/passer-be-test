@@ -1,12 +1,19 @@
 const { newDb } = require('pg-mem');
 
-const postgresql = newDb();
+const postgresql = newDb(); 
 
-// create mock data
-postgresql.public.none(`create table users(pk_user integer, name text, status boolean);
-                insert into users values (123, 'Juan', true);`);
+postgresql.public.none(`
+  create table if not exists users (
+    pk_user integer primary key,
+    name text,
+    status boolean
+  );
 
+  insert into users (pk_user, name, status) values
+  (123, 'Juan', true)
+  on conflict (pk_user) do nothing;
+`);
 
 module.exports = {
-    postgresql
-}
+  postgresql
+};
