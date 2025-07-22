@@ -41,20 +41,46 @@ const updateTransaction = async (req, res, next) => {
 };
 
 const getTransactionsByUser = async (req, res) => {
-  const { fk_user } = req.query;
+  const { fk_user, page } = req.query;
+  const PAGE_SIZE = 5;
+  const currentPage = parseInt(page) || 1;
+  const offset = (currentPage - 1) * PAGE_SIZE;
 
   try {
-    const result = await transactionService.getTransactionsByUser(fk_user);
-    res.status(200).json(result);
+    if (fk_user) {
+      const data = await transactionService.getTransactionsByUser(fk_user);
+      return res.status(200).json(data);
+    }
+
+    const result = await transactionService.getPaginatedTransactions(offset, PAGE_SIZE);
+    return res.status(200).json(result);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error(e.message);
+    return res.status(500).json({ error: e.message });
   }
 };
 
+
+const getPaginatedTransactions = (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+
+  if (!fk_user) {
+    return res.status(400).json({ error: 'Missing fk_user query parameter' });
+  }
+  try {
+    const result = transactionService.getPaginatedTransactions(page);
+    res.status(200).json(result);
+    next();
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ error: e.message });
+  }
+};
 
 module.exports = {
   createTransaction,
   getTransaction,
   updateTransaction,
-  getTransactionsByUser
+  getTransactionsByUser,
+  getPaginatedTransactions
 };

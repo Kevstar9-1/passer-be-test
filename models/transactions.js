@@ -40,9 +40,35 @@ const getTransactionsByUser = (fk_user) => {
   return postgresql.public.many(`SELECT * FROM transaction WHERE fk_user = ${fk_user}`);
 };
 
+const getPaginatedTransactions = (offset, limit) => {
+  try {
+    const data = postgresql.public.many(`
+      SELECT * FROM transaction
+      LIMIT ${parseInt(limit)} OFFSET ${parseInt(offset)};
+    `);
+
+    const countResult = postgresql.public.one(`
+      SELECT COUNT(*) as count FROM transaction
+    `);
+
+    return {
+      transactions: data,
+      metadata: {
+        count: parseInt(countResult.count),
+        page: offset / limit + 1
+      }
+    };
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
 module.exports = {
   createTransaction,
   getTransaction,
   updateTransaction,
-  getTransactionsByUser
+  getTransactionsByUser,
+  getPaginatedTransactions
 };
+
+

@@ -15,10 +15,14 @@ const getTransactionsByUser = async (fk_user) => {
   return await transactionModel.getTransactionsByUser(fk_user);
 };
 
+const getPaginatedTransactions = async (offset, limit) => {
+  return await transactionModel.getPaginatedTransactions(offset, limit);
+};
 
 module.exports = {
   createTransaction,
   getTransaction,
   updateTransaction,
-  getTransactionsByUser
+  getTransactionsByUser,
+  getPaginatedTransactions
 };
