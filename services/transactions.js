@@ -11,9 +11,14 @@ const updateTransaction = async (pk_transaction, fk_user, description, amount) =
   return await transactionModel.updateTransaction(pk_transaction, fk_user, description, amount);
 };
 
+const getTransactionsByUser = async (fk_user) => {
+  return await transactionModel.getTransactionsByUser(fk_user);
+};
+
 
 module.exports = {
   createTransaction,
   getTransaction,
-  updateTransaction
+  updateTransaction,
+  getTransactionsByUser
 };

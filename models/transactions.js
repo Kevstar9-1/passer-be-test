@@ -36,9 +36,13 @@ const updateTransaction = (pk_transaction, fk_user, description, amount) => {
     throw new Error(e.message);
   }
 };
+const getTransactionsByUser = (fk_user) => {
+  return postgresql.public.many(`SELECT * FROM transaction WHERE fk_user = ${fk_user}`);
+};
 
 module.exports = {
   createTransaction,
   getTransaction,
-  updateTransaction
+  updateTransaction,
+  getTransactionsByUser
 };

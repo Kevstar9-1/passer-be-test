@@ -40,9 +40,21 @@ const updateTransaction = async (req, res, next) => {
   }
 };
 
+const getTransactionsByUser = async (req, res) => {
+  const { fk_user } = req.query;
+
+  try {
+    const result = await transactionService.getTransactionsByUser(fk_user);
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+
 
 module.exports = {
   createTransaction,
   getTransaction,
-  updateTransaction
+  updateTransaction,
+  getTransactionsByUser
 };
